@@ -19,7 +19,7 @@ const startEmailListener = () => {
   mailListener.on("mail", (mail) => {
     console.log("INFO: new mail received \n from:", mail?.from?.text, "\n");
     let mailFrom = mail?.from?.text;
-    if (mailFrom.includes(process.env.EXPECTED_MAIL_SENDERS)) {
+    if (mailFrom.includes(process.env.EXPECTED_MAIL_SENDER)) {
       console.log(
         "!!!received email from ",
         process.env.EXPECTED_MAIL_SENDER,
