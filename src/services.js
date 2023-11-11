@@ -1,7 +1,7 @@
 const axios = require("axios");
 const { getHeaders } = require("./request-data");
 
-async function startAcceptOrderProcess() {
+async function startAssignProcess() {
   // -------------------- SIGN IN PLATFORM TO GET ACCESS TOKEN --------------------
   const auth = await getAccessToken();
   console.log("--> sign in sucessfully!");
@@ -51,7 +51,9 @@ async function getAccessToken() {
   };
 
   try {
-    const response = await axios.post(URL_GET_TOKEN, body, { headers });
+    const response = await axios.post(process.env.URL_GET_TOKEN, body, {
+      headers,
+    });
     return response.data;
   } catch (error) {
     console.error("--> !!!error during authentication:", error.message);
@@ -63,7 +65,7 @@ async function getOrders(auth) {
   const headers = getHeaders(auth);
 
   try {
-    const response = await axios.get(URL_GET_ORDERS, { headers });
+    const response = await axios.get(process.env.URL_GET_ORDERS, { headers });
     return response.data;
   } catch (error) {
     console.error("--> !!!error obtaining order data:", error.message);
@@ -82,7 +84,7 @@ async function assignOrder(auth, orderId) {
 
   try {
     const response = await axios.patch(
-      replaceId(URL_ASSIGN_ORDER, orderId),
+      replaceId(process.env.URL_ASSIGN_ORDER, orderId),
       body,
       { headers }
     );
@@ -94,5 +96,5 @@ async function assignOrder(auth, orderId) {
 }
 
 module.exports = {
-  startAcceptOrderProcess,
+  startAssignProcess,
 };

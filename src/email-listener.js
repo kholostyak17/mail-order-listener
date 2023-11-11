@@ -1,5 +1,5 @@
 const { MailListener } = require("mail-listener5");
-const { startAcceptOrderProcess } = require("./services");
+const { startAssignProcess } = require("./services");
 
 const mailListener = new MailListener({
   username: process.env.MAIL_RECEIVER_ADDRESS,
@@ -27,14 +27,12 @@ const startEmailListener = () => {
         "loading..."
       );
 
-      startAcceptOrderProcess();
+      startAssignProcess();
     }
   });
 
   mailListener.on("server:connected", () => {
     console.log("INFO: connected to the mail server");
-
-    startAcceptOrderProcess();
   });
 
   mailListener.on("server:disconnected", () => {
