@@ -4,7 +4,7 @@ const { getHeaders } = require("./request-data");
 async function startAssignProcess() {
   // -------------------- SIGN IN PLATFORM TO GET ACCESS TOKEN --------------------
   const auth = await getAccessToken();
-  console.log("--> sign in sucessfully!");
+  console.log("--> sucessfully signed in!");
 
   // -------------------- GET ORDER INFORMATION --------------------
   const ordersResponse = await getOrders(auth);
@@ -13,22 +13,22 @@ async function startAssignProcess() {
   const email = ordersResponse?.data?.[0]?.email_notification;
   const price = Number.parseInt(ordersResponse?.data?.[0]?.fee);
   console.log(
-    `--> appeared new order ID ${orderId} for ${email} with compensation ${price} PLN`
+    `--> new order ID ${orderId} for ${email} with compensation ${price} PLN appeared`
   );
 
   // -------------------- ACCEPT ORDER IF THE COMPENSATION IS WORTH IT --------------------
   if (price >= process.env.MIN_PRICE) {
-    let assignResponse = await assignOrder(customHeaders, orderId);
+    let assignResponse = await assignOrder(auth, orderId);
 
     if (assignResponse?.assigned_at) {
       console.log(
-        `--> order ID ${orderId} assigned at ${assignResponse?.assigned_at} sucessfully))\n`
+        `--> order ID ${orderId} assigned successfully at ${assignResponse?.assigned_at}))\n`
       );
     } else {
       console.log(`--> order ID ${orderId} assign process has failed!!\n`);
     }
   } else {
-    console.log(`--> order ID ${orderId} rejected due to low compensation`);
+    console.log(`--> order ID ${orderId} rejected due to low compensation\n`);
   }
   return;
 }
