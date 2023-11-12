@@ -78,7 +78,10 @@ async function assignOrder(auth, orderId) {
   const headers = {
     ...getHeaders(auth),
     "Content-Type": "application/json;charset=UTF-8",
-    "Content-Length": Buffer.byteLength(body, "utf-8").toString(),
+    "Content-Length": Buffer.byteLength(
+      JSON.stringify(body),
+      "utf-8"
+    ).toString(),
   };
   const replaceId = (string, id) => string.replace("{{id}}", id);
 

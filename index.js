@@ -1,11 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const { startEmailListener } = require("./src/email-listener");
+const { startAssignProcess } = require("./src/services");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-startEmailListener();
+startEmailListener(); // <-----
 
 app.get("/", (req, res) => {
   res.send(`
@@ -18,6 +19,20 @@ app.get("/", (req, res) => {
       </body>
     </html>
   `);
+});
+
+app.get("/test", async (req, res) => {
+  if (process.env.TRY_MODE_ENABLED) {
+    try {
+      await startAssignProcess();
+    } catch (error) {
+      console.error("unexpected error:", error.message);
+    }
+
+    res.status(200).send();
+  } else {
+    res.status(500).send();
+  }
 });
 
 app.listen(port, () => {

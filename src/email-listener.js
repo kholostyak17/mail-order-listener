@@ -16,8 +16,8 @@ const mailListener = new MailListener({
 const startEmailListener = () => {
   mailListener.start();
 
-  mailListener.on("mail", (mail) => {
-    console.log("INFO: new mail received \n from:", mail?.from?.text, "\n");
+  mailListener.on("mail", async (mail) => {
+    console.log("INFO: new mail received from:", mail?.from?.text, "\n");
     let mailFrom = mail?.from?.text;
     if (mailFrom.includes(process.env.EXPECTED_MAIL_SENDER)) {
       console.log(
@@ -27,7 +27,11 @@ const startEmailListener = () => {
         "loading..."
       );
 
-      startAssignProcess();
+      try {
+        await startAssignProcess();
+      } catch (error) {
+        console.error("unexpected error:", error.message);
+      }
     }
   });
 

@@ -1,5 +1,5 @@
 {
-  "name": "mail-trigger-assign-process",
+  "name": "mail-order-listener",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
