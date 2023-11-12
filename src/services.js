@@ -11,13 +11,13 @@ async function startAssignProcess() {
 
   const orderId = ordersResponse?.data?.[0]?.id;
   const email = ordersResponse?.data?.[0]?.email_notification;
-  const price = Number.parseInt(ordersResponse?.data?.[0]?.fee);
+  const price = Number.parseFloat(ordersResponse?.data?.[0]?.fee);
   console.log(
     `--> new order ID ${orderId} for ${email} with compensation ${price} PLN appeared`
   );
 
   // -------------------- ACCEPT ORDER IF THE COMPENSATION IS WORTH IT --------------------
-  if (price >= process.env.MIN_PRICE) {
+  if (price >= Number.parseFloat(process.env.MIN_PRICE)) {
     let assignResponse = await assignOrder(auth, orderId);
 
     if (assignResponse?.assigned_at) {
@@ -78,7 +78,7 @@ async function assignOrder(auth, orderId) {
   const headers = {
     ...getHeaders(auth),
     "Content-Type": "application/json;charset=UTF-8",
-    "Content-Length": Buffer.byteLength(bodyString, "utf-8").toString(),
+    "Content-Length": Buffer.byteLength(body, "utf-8").toString(),
   };
   const replaceId = (string, id) => string.replace("{{id}}", id);
 
