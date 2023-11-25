@@ -6,30 +6,39 @@ async function startAssignProcess() {
   const auth = await getAccessToken();
   console.log("--> sucessfully signed in!");
 
-  // -------------------- GET ORDER INFORMATION --------------------
+  // -------------------- GET ORDERS LIST --------------------
   const ordersResponse = await getOrders(auth);
+  const order = ordersResponse?.data?.[0];
 
-  const orderId = ordersResponse?.data?.[0]?.id;
-  const email = ordersResponse?.data?.[0]?.email_notification;
-  const price = Number.parseFloat(ordersResponse?.data?.[0]?.fee);
-  console.log(
-    `--> new order ID ${orderId} for ${email} with compensation ${price} PLN appeared`
-  );
+  // -------------------- CHECK IF ANY ORDER IS AVAILABLE --------------------
+  if (order) {
+    const orderId = order?.id;
+    const email = order?.email_notification;
+    const price = Number.parseFloat(order?.fee);
+    console.log(
+      `--> new order ID ${orderId} for ${email} with compensation ${price} PLN appeared`
+    );
 
-  // -------------------- ACCEPT ORDER IF THE COMPENSATION IS WORTH IT --------------------
-  if (price >= Number.parseFloat(process.env.MIN_PRICE)) {
-    let assignResponse = await assignOrder(auth, orderId);
+    // -------------------- ACCEPT ORDER IF THE COMPENSATION IS WORTH IT --------------------
+    if (price >= Number.parseFloat(process.env.MIN_PRICE)) {
+      const assignResponse = await assignOrder(auth, orderId);
 
-    if (assignResponse?.assigned_at) {
-      console.log(
-        `--> order ID ${orderId} assigned successfully at ${assignResponse?.assigned_at}))\n`
-      );
+      if (assignResponse?.assigned_at) {
+        console.log(
+          `--> order ID ${orderId} assigned successfully at ${assignResponse?.assigned_at}))\n`
+        );
+      } else {
+        console.log(`--> order ID ${orderId} assign process has failed!!\n`);
+      }
     } else {
-      console.log(`--> order ID ${orderId} assign process has failed!!\n`);
+      console.log(`--> order ID ${orderId} rejected due to low compensation\n`);
     }
   } else {
-    console.log(`--> order ID ${orderId} rejected due to low compensation\n`);
+    console.log(
+      `--> order is not available, maybe a order is already in progress :(\n`
+    );
   }
+
   return;
 }
 
