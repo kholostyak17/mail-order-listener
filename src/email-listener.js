@@ -29,6 +29,7 @@ const startEmailListener = () => {
 
       try {
         await startAssignProcess();
+        console.log("INFO: email processing completed");
       } catch (error) {
         console.error("unexpected error:", error.message);
       }
@@ -40,7 +41,8 @@ const startEmailListener = () => {
   });
 
   mailListener.on("server:disconnected", () => {
-    console.log("INFO: disconnected from the mail server");
+    console.log("INFO: disconnected from the mail server. Reconnecting...");
+    mailListener.start();
   });
 };
 
