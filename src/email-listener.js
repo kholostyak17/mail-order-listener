@@ -42,7 +42,7 @@ const startEmailListener = () => {
 
   mailListener.on("server:disconnected", () => {
     console.log("INFO: disconnected from the mail server. Reconnecting...");
-    mailListener.start();
+    throw new Error();
   });
 };
 
