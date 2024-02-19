@@ -1,4 +1,4 @@
-const MailListener = require("mail-listener2");
+const { MailListener } = require("mail-listener5");
 const { startAssignProcess } = require("./services");
 
 const mailListener = new MailListener({
@@ -8,9 +8,10 @@ const mailListener = new MailListener({
   port: 993,
   tls: true,
   mailbox: "INBOX",
-  markSeen: false,
-  fetchUnreadOnStart: false,
+  markSeen: true,
+  fetchUnreadOnStart: true,
   tlsOptions: { rejectUnauthorized: false },
+  debug: console.log,
 });
 
 const startEmailListener = () => {
@@ -24,17 +25,17 @@ const startEmailListener = () => {
     console.log("INFO: Disconnected from the mail server. Reconnecting...");
   });
 
-  mailListener.on("error", function (err) {
+  mailListener.on("error", (err) => {
     console.log(err);
   });
 
-  mailListener.on("mail", function (mail, seqno, attributes) {
-    console.info(mail);
+  mailListener.on("mail", async (mail) => {
     let mailFrom = mail?.from?.text;
+    console.log("new mail from", mailFrom);
     if (mailFrom && mailFrom.includes(process.env.EXPECTED_MAIL_SENDER)) {
       console.log("New email received from ", mailFrom, ". Loading process...");
       try {
-        startAssignProcess();
+        // await startAssignProcess();
         console.log("Email processing completed!!!\n");
       } catch (error) {
         console.error("Unexpected error: ", error.message, "\n");
