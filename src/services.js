@@ -4,7 +4,7 @@ const { getHeaders } = require("./request-data");
 async function startAssignProcess() {
   // -------------------- SIGN IN PLATFORM TO GET ACCESS TOKEN --------------------
   const auth = await getAccessToken();
-  console.log("--> sucessfully signed in!");
+  console.log("--> Sucessfully signed in!");
 
   // -------------------- GET ORDERS LIST --------------------
   const ordersResponse = await getOrders(auth);
@@ -16,7 +16,7 @@ async function startAssignProcess() {
     const email = order?.email_notification;
     const price = Number.parseFloat(order?.fee);
     console.log(
-      `--> new order ID ${orderId} for ${email} with compensation ${price} PLN appeared`
+      `--> New order appeared: \nid: ${orderId}\nemail: ${email}\ncompensation: ${price} PLN`
     );
 
     // -------------------- ACCEPT ORDER IF THE COMPENSATION IS WORTH IT --------------------
@@ -25,17 +25,19 @@ async function startAssignProcess() {
 
       if (assignResponse?.assigned_at) {
         console.log(
-          `--> order ID ${orderId} assigned successfully at ${assignResponse?.assigned_at}))\n`
+          `--> Order id ${orderId} assigned successfully at ${assignResponse?.assigned_at}))`
         );
       } else {
-        console.log(`--> order ID ${orderId} assign process has failed!!\n`);
+        console.log(`--> Order id ${orderId} assign process has failed!!`);
       }
     } else {
-      console.log(`--> order ID ${orderId} rejected due to low compensation\n`);
+      console.log(
+        `--> Order id ${orderId} rejected due to low compensation :(`
+      );
     }
   } else {
     console.log(
-      `--> order is not available, maybe a order is already in progress :(\n`
+      `--> Order not available, maybe another order is already in progress, or someone has been faster...\n`
     );
   }
 
@@ -65,7 +67,7 @@ async function getAccessToken() {
     });
     return response.data;
   } catch (error) {
-    console.error("--> !!!error during authentication:", error.message);
+    console.error("Error during authentication: ", error.message);
     throw error;
   }
 }
@@ -77,7 +79,7 @@ async function getOrders(auth) {
     const response = await axios.get(process.env.URL_GET_ORDERS, { headers });
     return response.data;
   } catch (error) {
-    console.error("--> !!!error obtaining order data:", error.message);
+    console.error("Error obtaining order data: ", error.message);
     throw error;
   }
 }
@@ -102,7 +104,7 @@ async function assignOrder(auth, orderId) {
     );
     return response.data;
   } catch (error) {
-    console.error("--> !!!error assigning order:", error.message);
+    console.error("Error assigning order: ", error.message);
     throw error;
   }
 }

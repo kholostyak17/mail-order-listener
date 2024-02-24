@@ -16,33 +16,32 @@ const mailListener = new MailListener({
 const startEmailListener = () => {
   mailListener.start();
 
-  mailListener.on("mail", async (mail) => {
-    console.log("INFO: new mail received from:", mail?.from?.text, "\n");
-    let mailFrom = mail?.from?.text;
-    if (mailFrom.includes(process.env.EXPECTED_MAIL_SENDER)) {
-      console.log(
-        "!!!received email from ",
-        process.env.EXPECTED_MAIL_SENDER,
-        "\n",
-        "loading..."
-      );
-
-      try {
-        await startAssignProcess();
-        console.log("INFO: email processing completed");
-      } catch (error) {
-        console.error("unexpected error:", error.message);
-      }
-    }
-  });
-
   mailListener.on("server:connected", () => {
-    console.log("INFO: connected to the mail server");
+    console.log("INFO: Connected to the mail server");
   });
 
   mailListener.on("server:disconnected", () => {
-    console.log("INFO: disconnected from the mail server. Reconnecting...");
+    console.log("INFO: Disconnected from the mail server. Reconnecting...");
     throw new Error();
+  });
+
+  mailListener.on("error", (err) => {
+    console.error(err);
+  });
+
+  mailListener.on("mail", async (mail) => {
+    const mailFrom = mail?.from?.text;
+    if (mailFrom && mailFrom.includes(process.env.EXPECTED_MAIL_SENDER)) {
+      console.log("New email received from ", mailFrom, ". Loading process...");
+      try {
+        await startAssignProcess();
+        console.log("Email processing completed!!!\n");
+      } catch (error) {
+        console.error("Unexpected error: ", error.message, "\n");
+      }
+    } else {
+      console.log("New mail from", mailFrom, " --> ignored\n");
+    }
   });
 };
 
