@@ -8,7 +8,21 @@ async function startAssignProcess() {
 
   // -------------------- GET ORDERS LIST --------------------
   const ordersResponse = await getOrders(auth);
-  const order = ordersResponse?.data?.[0];
+  const order = ordersResponse?.data?.[ordersResponse.data.length - 1];
+
+  // -------------------- **TEMP LOGS TO CHECK WHY ORDERS ARE NOT APPEARING** --------------------
+  console.log(
+    "\n----------&&&&&&&&&&&&&&&&----------TEMP LOGS TO CHECK WHY ORDERS ARE NOT APPEARING----------------&&&&&&&&&&&&&&&&&\n"
+  );
+  console.log("ordersResponse:", ordersResponse);
+  console.log(
+    "\n----------&&&&&&&&&&&&&&&&--------------------------&&&&&&&&&&&&&&&&&\n"
+  );
+  console.log("ordersResponse?.data:", ordersResponse?.data);
+  console.log("ordersResponse?.data.length:", ordersResponse?.data?.length);
+  console.log(
+    "\n----------&&&&&&&&&&&&&&&&--------------------------&&&&&&&&&&&&&&&&&\n"
+  );
 
   // -------------------- CHECK IF ANY ORDER IS AVAILABLE --------------------
   if (order) {
